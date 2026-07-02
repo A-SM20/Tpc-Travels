@@ -1,4 +1,4 @@
-redirectIfLoggedIn("/profile.html");
+redirectIfLoggedIn("./pages/main.html");
 
 document.getElementById("loginForm").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -12,7 +12,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
     loginButton.disabled = true;
     loginButton.textContent = "Logging in...";
     await signInWithEmail(email, password, rememberMe);
-    window.location.href = "/profile.html";
+    window.location.href = "./pages/main.html";
   } catch (error) {
     console.error("Error:", error);
     alert(error.message);
@@ -27,7 +27,7 @@ document.getElementById("googleLogin").addEventListener("click", async () => {
     googleButton.disabled = true;
     googleButton.textContent = "Connecting...";
     await signInWithGoogle();
-    window.location.href = "/profile.html";
+    window.location.href = "./pages/main.html";
   } catch (error) {
     console.error("Error:", error);
     alert(error.message);

@@ -1,0 +1,212 @@
+/* =========================
+   Global Styles
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Montserrat",sans-serif;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+}
+
+body{
+    overflow:hidden;
+}
+
+/* =========================
+   Navigation
+========================= */
+
+.navbar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    padding:20px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:rgba(0,0,0,.15);
+    backdrop-filter:blur(8px);
+    z-index:1000;
+}
+
+.logo{
+    color:#fff;
+    font-size:32px;
+    font-weight:700;
+    letter-spacing:1px;
+}
+
+/* =========================
+   Hero Section
+========================= */
+
+.header__container{
+    width:100%;
+    height:100vh;
+}
+
+.header-text{
+    width:100%;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:rgba(0,0,0,.45);
+    position:relative;
+    z-index:2;
+}
+
+.text-content{
+    max-width:850px;
+    padding:20px;
+}
+
+.text-content h3{
+    color:#ffffff;
+    font-size:28px;
+    font-weight:400;
+    margin-bottom:20px;
+}
+
+.text-content h1{
+    color:#ffffff;
+    font-size:72px;
+    font-weight:700;
+    margin-bottom:25px;
+    text-transform:uppercase;
+}
+
+.text-content p{
+    color:#ffffff;
+    font-size:18px;
+    line-height:1.8;
+    margin-bottom:40px;
+}
+
+.text-content a{
+    display:inline-block;
+    text-decoration:none;
+    padding:15px 40px;
+    border-radius:40px;
+    background:#ffffff;
+    color:#222;
+    font-weight:600;
+    transition:.3s;
+}
+
+.text-content a:hover{
+    background:transparent;
+    border:2px solid #fff;
+    color:#fff;
+}
+
+/* =========================
+   Background Image
+========================= */
+
+.slides{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    list-style:none;
+    z-index:-1;
+}
+
+.slides li{
+    width:100%;
+    height:100%;
+}
+
+.slides li span{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:url("../assets/img1.jpg") center center/cover no-repeat;
+}
+
+/* Dark overlay */
+
+.slides::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.20);
+}
+
+/* =========================
+   Responsive
+========================= */
+
+@media(max-width:992px){
+
+    .navbar{
+        padding:20px;
+    }
+
+    .logo{
+        font-size:26px;
+    }
+
+    .text-content h1{
+        font-size:52px;
+    }
+
+    .text-content h3{
+        font-size:22px;
+    }
+
+    .text-content p{
+        font-size:16px;
+    }
+}
+
+@media(max-width:768px){
+
+    .text-content h1{
+        font-size:40px;
+    }
+
+    .text-content h3{
+        font-size:18px;
+    }
+
+    .text-content p{
+        font-size:15px;
+    }
+
+    .text-content a{
+        padding:12px 30px;
+    }
+}
+
+@media(max-width:480px){
+
+    .logo{
+        font-size:22px;
+    }
+
+    .text-content h1{
+        font-size:30px;
+    }
+
+    .text-content h3{
+        font-size:16px;
+    }
+
+    .text-content p{
+        font-size:14px;
+    }
+}
