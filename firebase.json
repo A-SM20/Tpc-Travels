@@ -32,7 +32,30 @@
     "ignore": [
       "firebase.json",
       "**/.*",
-      "**/node_modules/**"
+      "**/node_modules/**",
+      "functions/**",
+      "dataconnect/**",
+      "public/**",
+      "sites/**",
+      "apphosting.yaml",
+      "*.md"
+    ],
+    "rewrites": [
+      {
+        "source": "/main",
+        "destination": "/pages/main.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(js|css|jpg|jpeg|png|gif|webp|svg|ico)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "max-age=3600"
+          }
+        ]
+      }
     ]
   }
 }

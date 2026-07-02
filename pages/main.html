@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link rel="stylesheet" href="/css/styles.css" />
+    <link rel="stylesheet" href="/css/sliderstyle.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>TPC Travels - Your Travel Partner</title>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <style>
+      .profile-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .profile-link {
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 15px rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease;
+        cursor: pointer;
+      }
+
+      .profile-link:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+      }
+
+      .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .profile-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 20px;
+      }
+
+      .dropdown {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        z-index: 1000;
+      }
+
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0.95);
+        min-width: 160px;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .dropdown-content.show {
+        display: block;
+      }
+
+      .dropdown-item {
+        padding: 12px 16px;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        color: #333;
+        transition: background-color 0.3s ease;
+      }
+
+      .dropdown-item:hover {
+        background-color: #f5f5f5;
+      }
+
+      .dropdown-item i {
+        margin-right: 10px;
+        width: 20px;
+      }
+
+      .dropdown-divider {
+        height: 1px;
+        background-color: #eee;
+        margin: 0;
+      }
+
+      .logout-btn {
+        background: none;
+        border: none;
+        padding: 12px 16px;
+        width: 100%;
+        text-align: left;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        transition: background-color 0.3s ease;
+      }
+
+      .logout-btn:hover {
+        background-color: #f5f5f5;
+      }
+
+      .logout-btn i {
+        margin-right: 10px;
+        width: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Profile Logo -->
+    <div class="profile-container">
+      <div class="profile-link" id="profileLink">
+        <div class="profile-placeholder" id="profilePlaceholder">
+          <i class="fas fa-user"></i>
+        </div>
+        <img src="" alt="Profile" class="profile-image" id="profileImage" style="display: none;">
+      </div>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <div class="dropdown">
+      <div class="dropdown-content" id="dropdownContent">
+        <a href="/profile.html" class="dropdown-item">
+          <i class="fas fa-user"></i>
+          Profile
+        </a>
+        <hr class="dropdown-divider">
+        <button class="logout-btn" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <nav>
+      <div class="nav__header">
+        <div class="nav__logo">
+          <a href="#">TPC<span>Travels</span></a>
+        </div>
+        <div class="nav__menu__btn" id="menu-btn">
+          <i class="ri-menu-3-line"></i>
+        </div>
+      </div>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#slider">Destinations</a></li>
+        <li><a href="#package">Packages</a></li>
+        <li><a href="#client">Reviews</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="nav__btns">
+        <!-- Register button removed -->
+      </div>
+    </nav>
+
+    <header class="section__container header__container" id="home">
+      <div class="header__content">
+        <h1><span>Let's</span> Create Memorable Journey</h1>
+        <p class="section__description">
+          Embark on an unforgettable adventure with us! Discover breathtaking
+          destinations, create lasting memories, and make every journey
+          remarkable.
+        </p>
+      
+      </div>
+      <div class="header__image">
+        <img src="/assets/header-1.jpg" alt="header" />
+        <img src="/assets/header-2.jpg" alt="header" />
+        <img src="/assets/header-3.jpg" alt="header" />
+        <img src="/assets/bg.png" alt="bg" />
+      </div>
+    </header>
+
+    <section class="section__container choose__container" id="about">
+      <div class="choose__image">
+        <img src="/assets/choose.jpg" alt="choose" />
+      </div>
+      <div class="choose__content">
+        <p class="section__subheader">Why Choose Us?</p>
+        <h2 class="section__header">Plan Your Trip <span>With Us</span></h2>
+        <ul class="choose__list">
+          <li>
+            <span><i class="ri-verified-badge-fill"></i></span>
+            <div>
+              <h4>Best Price Gurantee</h4>
+              <p>
+                We ensure you get the most competitive rates for your travel
+                plans, making your dream destinations affordable.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span><i class="ri-calendar-fill"></i></span>
+            <div>
+              <h4>Booking Options</h4>
+              <p>
+                Experience the ease of flexible booking options tailored to suit
+                your schedule and preferences.
+              </p>
+            </div>
+          </li>
+          <li>
+            <span><i class="ri-road-map-fill"></i></span>
+            <div>
+              <h4>Revising Track Map</h4>
+              <p>
+                Navigate your adventure with our personalized track maps
+                designed for seamless and enjoyable travel experiences.
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Slider Section -->
+    <section class="slider-section" id="slider">
+      <div class="container">
+        <div class="slide">
+          <div class="item" style="background-image: url(/blog/assets/2.jpg);">
+            <div class="content">
+              <div class="name">Madurai</div>
+              <div class="des">Discover the Temple City of Tamil Nadu</div>
+              <button onclick="window.location.href='/blog/madurai.html'">See More</button>
+            </div>
+          </div>
+          <div class="item" style="background-image: url(/blog/assets/virupaksha_temple.jpg);">
+            <div class="content">
+              <div class="name">Hampi</div>
+              <div class="des">Explore the Ancient City of Ruins</div>
+              <button onclick="window.location.href='/blog/hampi.html'">See More</button>
+            </div>
+          </div>
+          <div class="item" style="background-image: url(/blog/assets/m_palace.jpg);">
+            <div class="content">
+              <div class="name">Mysore</div>
+              <div class="des">Experience the City of Palaces</div>
+              <button onclick="window.location.href='/blog/mysore.html'">See More</button>
+            </div>
+          </div>
+          <div class="item" style="background-image: url(/blog/assets/eravikulam-national-park-neelakuriji.jpg);">
+            <div class="content">
+              <div class="name">Munnar</div>
+              <div class="des">The Tea Paradise of Kerala</div>
+              <button onclick="window.location.href='/blog/munnar.html'">See More</button>
+            </div>
+          </div>
+          <div class="item" style="background-image: url(/blog/assets/p_rock.jpg);">
+            <div class="content">
+              <div class="name">Pondicherry</div>
+              <div class="des">The French Riviera of the East</div>
+              <button onclick="window.location.href='/blog/pondicherry.html'">See More</button>
+            </div>
+          </div>
+          <div class="item" style="background-image: url(/blog/assets/ramanathaswamy.jpg);">
+            <div class="content">
+              <div class="name">Rameshwaram</div>
+              <div class="des">The Sacred Island of Tamil Nadu</div>
+              <button onclick="window.location.href='/blog/rameswaram.html'">See More</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="button">
+          <button class="prev"><i class="fa-solid fa-arrow-left"></i></button>
+          <button class="next"><i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section__container popular__container" id="package">
+      <img src="/assets/bg.png" alt="bg" class="popular__bg" />
+      <p class="section__subheader">Popular Packages</p>
+      <h2 class="section__header">Our Best <span>Travel Packages</span></h2>
+      <!-- Slider main container -->
+      <div class="swiper">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+          <!-- Slides -->
+          <div class="swiper-slide">
+            <div class="popular__card">
+              <img src="/blog/assets/2.jpg" alt="Madurai Temple Tour" />
+              <div class="popular__content">
+                <div class="popular__rating">
+                  <span><i class="ri-star-fill"></i></span>
+                  4.8(45) 😊
+                </div>
+                <h4>Madurai Temple Tour</h4>
+                <p><span>Rs. 12,000/-</span> Per Person</p>
+                <div class="popular__card__footer">
+                  <div>
+                    <span><i class="ri-time-line"></i></span> 3 Days
+                  </div>
+                  <div>
+                    <span><i class="ri-group-3-fill"></i></span> 15+
+                  </div>
+                  <div>
+                    <span><i class="ri-map-pin-2-fill"></i></span> Tamil Nadu
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="popular__card">
+              <img src="/blog/assets/virupaksha_temple.jpg" alt="Hampi Heritage Tour" />
+              <div class="popular__content">
+                <div class="popular__rating">
+                  <span><i class="ri-star-fill"></i></span>
+                  4.9(38) 😘
+                </div>
+                <h4>Hampi Heritage Tour</h4>
+                <p><span>Rs. 15,000/-</span> Per Person</p>
+                <div class="popular__card__footer">
+                  <div>
+                    <span><i class="ri-time-line"></i></span> 4 Days
+                  </div>
+                  <div>
+                    <span><i class="ri-group-3-fill"></i></span> 12+
+                  </div>
+                  <div>
+                    <span><i class="ri-map-pin-2-fill"></i></span> Karnataka
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="popular__card">
+              <img src="/blog/assets/m_palace.jpg" alt="Mysore Palace Tour" />
+              <div class="popular__content">
+                <div class="popular__rating">
+                  <span><i class="ri-star-fill"></i></span>
+                  4.7(42) 😊
+                </div>
+                <h4>Mysore Palace Tour</h4>
+                <p><span>Rs. 18,000/-</span> Per Person</p>
+                <div class="popular__card__footer">
+                  <div>
+                    <span><i class="ri-time-line"></i></span> 3 Days
+                  </div>
+                  <div>
+                    <span><i class="ri-group-3-fill"></i></span> 20+
+                  </div>
+                  <div>
+                    <span><i class="ri-map-pin-2-fill"></i></span> Karnataka
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="popular__card">
+              <img src="/blog/assets/eravikulam-national-park-neelakuriji.jpg" alt="Munnar Tea Tour" />
+              <div class="popular__content">
+                <div class="popular__rating">
+                  <span><i class="ri-star-fill"></i></span>
+                  4.9(35) 😘
+                </div>
+                <h4>Munnar Tea Tour</h4>
+                <p><span>Rs. 22,000/-</span> Per Person</p>
+                <div class="popular__card__footer">
+                  <div>
+                    <span><i class="ri-time-line"></i></span> 4 Days
+                  </div>
+                  <div>
+                    <span><i class="ri-group-3-fill"></i></span> 15+
+                  </div>
+                  <div>
+                    <span><i class="ri-map-pin-2-fill"></i></span> Kerala
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="popular__card">
+              <img src="/blog/assets/p_rock.jpg" alt="Pondicherry French Tour" />
+              <div class="popular__content">
+                <div class="popular__rating">
+                  <span><i class="ri-star-fill"></i></span>
+                  4.6(28) 😊
+                </div>
+                <h4>Pondicherry French Tour</h4>
+                <p><span>Rs. 16,000/-</span> Per Person</p>
+                <div class="popular__card__footer">
+                  <div>
+                    <span><i class="ri-time-line"></i></span> 3 Days
+                  </div>
+                  <div>
+                    <span><i class="ri-group-3-fill"></i></span> 18+
+                  </div>
+                  <div>
+                    <span><i class="ri-map-pin-2-fill"></i></span> Puducherry
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Add pagination -->
+        <div class="swiper-pagination"></div>
+      </div>
+    </section>
+
+    <section class="section__container client__container" id="client">
+      <img src="/assets/bg.png" alt="bg" class="client__bg" />
+      <p class="section__subheader">What Our Client Say's?</p>
+      <h2 class="section__header">Client <span>Testimonials</span></h2>
+      <div class="client__card active">
+        <img src="/assets/client-1.jpg" alt="client" />
+        <div class="client__content">
+          <h4>Emma Johnson</h4>
+          <h5>Travel Blogger</h5>
+          <p>
+            This travel platform turned my bucket list dreams into reality! The
+            booking process was seamless, and their team provided excellent
+            guidance on must-visit spots. Every step felt effortless, and I
+            can't wait to plan my next adventure with them. Highly recommended!
+          </p>
+        </div>
+      </div>
+      <div class="client__card">
+        <img src="/assets/client-2.jpg" alt="client" />
+        <div class="client__content">
+          <h4>Sophia Lee</h4>
+          <h5>Software Engineer</h5>
+          <p>
+            Traveling with this service was a delight! The flexible booking
+            options gave me the freedom to plan at my own pace, and the detailed
+            itineraries ensured I didn't miss anything important. I felt like
+            they genuinely cared about creating the perfect travel experience
+            for me. Absolutely wonderful!
+          </p>
+        </div>
+      </div>
+      <div class="client__card">
+        <img src="/assets/client-3.jpg" alt="client" />
+        <div class="client__content">
+          <h4>Michael Roberts</h4>
+          <h5>Photographer</h5>
+          <p>
+            As a photographer, finding picturesque locations is key, and this
+            platform exceeded my expectations. They not only made booking easy
+            but also helped me discover some incredible hidden gems. Their
+            attention to detail made my journey unforgettable and hassle-free!
+          </p>
+        </div>
+      </div>
+      <div class="client__btns">
+        <button class="btn" id="prev">
+          <i class="ri-arrow-left-line"></i>
+        </button>
+        <button class="btn" id="next">
+          <i class="ri-arrow-right-line"></i>
+        </button>
+      </div>
+    </section>
+
+    <footer>
+      <div class="section__container footer__container" id="contact">
+        <div class="footer__col">
+          <div class="footer__logo">
+            <a href="#">TPCTravels</a>
+          </div>
+          <p>
+            Explore the world with us! Connect through our social media
+            channels, find quick links to essential resources, and access 24/7
+            support to make your travel planning effortless.
+          </p>
+          <ul class="footer__socials">
+            <li>
+              <a href="#"><i class="ri-facebook-fill"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="ri-twitter-fill"></i></a>
+            </li>
+            <li>
+              <a href="#"><i class="ri-instagram-line"></i></a>
+            </li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Services</h4>
+          <ul class="footer__links">
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#slider">Destinations</a></li>
+            <li><a href="#package">Packages</a></li>
+            <li><a href="#client">Reviews</a></li>
+          </ul>
+        </div>
+        <div class="footer__col">
+          <h4>Instagram</h4>
+          <div class="footer__col__flex">
+            <img src="/assets/instagram-1.jpg" alt="instagram" />
+            <img src="/assets/instagram-2.jpg" alt="instagram" />
+            <img src="/assets/instagram-3.jpg" alt="instagram" />
+            <img src="/assets/instagram-4.jpg" alt="instagram" />
+            <img src="/assets/instagram-5.jpg" alt="instagram" />
+            <img src="/assets/instagram-6.jpg" alt="instagram" />
+          </div>
+        </div>
+        <div class="footer__col">
+          <h4>Contact</h4>
+          <ul class="footer__links">
+            <li>
+              <a href="#">
+                <span><i class="ri-phone-fill"></i></span> +91 09876543xx
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span><i class="ri-map-pin-fill"></i></span> Chennai, India
+              </a>
+            </li>
+            <li>
+              <a href="#">
+                <span><i class="ri-mail-fill"></i></span> info@tpctravels
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bar">
+         © 2025 ThamarakshanPillaCo. All rights reserved.
+      </div>
+    </footer>
+
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/sliderjs.js"></script>
+    <script src="/js/firebase.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/main-page.js"></script>
+    <script>initMainPage();</script>
+  </body>
+</html> 

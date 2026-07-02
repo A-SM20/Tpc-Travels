@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TPC Travels Sign Up</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="loginstyle.css">
-  <!-- Firebase SDK -->
+  <link rel="stylesheet" href="/css/loginstyle.css">
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -99,109 +98,8 @@
     </form>
   </div>
 
-  <!-- Firebase Configuration -->
-  <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyB0RAzn8Cu-49BpAKuuUr-N79ezda9e9qo",
-      authDomain: "tpc-travels.firebaseapp.com",
-      projectId: "tpc-travels",
-      storageBucket: "tpc-travels.firebasestorage.app",
-      messagingSenderId: "404762624068",
-      appId: "1:404762624068:web:d366c0940d9514ff063c11"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-
-    // Check if user is already logged in
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in, redirect to landing page
-        window.location.href = '../tpc landing/main.html';
-      }
-    });
-
-    // Handle form submission
-    document.getElementById('signupForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const signupButton = document.getElementById('signupButton');
-      const fullName = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-
-      if (password !== confirmPassword) {
-        alert("Passwords don't match!");
-        return;
-      }
-
-      try {
-        // Disable button and show loading state
-        signupButton.disabled = true;
-        signupButton.textContent = 'Creating Account...';
-
-        // Create user with email and password
-        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-
-        // Store additional user data in Firestore
-        await db.collection('users').doc(user.uid).set({
-          fullName: fullName,
-          email: email,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          lastLogin: new Date().toISOString()
-        });
-
-        // Store last login time in localStorage
-        localStorage.setItem('lastLogin', new Date().toISOString());
-        
-        // Redirect will happen automatically via onAuthStateChanged
-      } catch (error) {
-        console.error('Error:', error);
-        alert(error.message);
-        // Reset button state
-        signupButton.disabled = false;
-        signupButton.textContent = 'Sign Up';
-      }
-    });
-
-    // Handle Google Sign Up
-    document.getElementById('googleSignUp').addEventListener('click', async () => {
-      const googleButton = document.getElementById('googleSignUp');
-      try {
-        // Disable button and show loading state
-        googleButton.disabled = true;
-        googleButton.textContent = 'Connecting...';
-
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await auth.signInWithPopup(provider);
-        const user = result.user;
-
-        // Store user data in Firestore
-        await db.collection('users').doc(user.uid).set({
-          fullName: user.displayName,
-          email: user.email,
-          photoURL: user.photoURL,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          lastLogin: new Date().toISOString()
-        }, { merge: true });
-
-        // Store last login time in localStorage
-        localStorage.setItem('lastLogin', new Date().toISOString());
-        
-        // Redirect will happen automatically via onAuthStateChanged
-      } catch (error) {
-        console.error('Error:', error);
-        alert(error.message);
-        // Reset button state
-        googleButton.disabled = false;
-        googleButton.textContent = 'Sign up with Google';
-      }
-    });
-  </script>
+  <script src="/js/firebase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/signup-page.js"></script>
 </body>
 </html> 

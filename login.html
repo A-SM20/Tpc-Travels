@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TPC Travels Login</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="loginstyle.css">
-  <!-- Firebase SDK -->
+  <link rel="stylesheet" href="/css/loginstyle.css">
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <style>
     .back-home {
       position: fixed;
@@ -87,92 +87,8 @@
     </form>
   </div>
 
-  <!-- Firebase Configuration -->
-  <script>
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyB0RAzn8Cu-49BpAKuuUr-N79ezda9e9qo",
-      authDomain: "tpc-travels.firebaseapp.com",
-      projectId: "tpc-travels",
-      storageBucket: "tpc-travels.firebasestorage.app",
-      messagingSenderId: "404762624068",
-      appId: "1:404762624068:web:d366c0940d9514ff063c11"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // Check if user is already logged in
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        // User is signed in, redirect to landing page
-        window.location.href = '../tpc landing/main.html';
-      }
-    });
-
-    // Handle form submission
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const loginButton = document.getElementById('loginButton');
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const rememberMe = document.getElementById('rememberMe').checked;
-
-      try {
-        // Disable button and show loading state
-        loginButton.disabled = true;
-        loginButton.textContent = 'Logging in...';
-
-        // Set persistence based on remember me checkbox
-        if (rememberMe) {
-          await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        } else {
-          await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
-        }
-
-        // Sign in with email and password
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
-        const user = userCredential.user;
-
-        // Store last login time in localStorage
-        localStorage.setItem('lastLogin', new Date().toISOString());
-        
-        // Redirect will happen automatically via onAuthStateChanged
-      } catch (error) {
-        console.error('Error:', error);
-        alert(error.message);
-        // Reset button state
-        loginButton.disabled = false;
-        loginButton.textContent = 'Login';
-      }
-    });
-
-    // Handle Google Login
-    document.getElementById('googleLogin').addEventListener('click', async () => {
-      const googleButton = document.getElementById('googleLogin');
-      try {
-        // Disable button and show loading state
-        googleButton.disabled = true;
-        googleButton.textContent = 'Connecting...';
-
-        const provider = new firebase.auth.GoogleAuthProvider();
-        const result = await auth.signInWithPopup(provider);
-        const user = result.user;
-
-        // Store last login time in localStorage
-        localStorage.setItem('lastLogin', new Date().toISOString());
-        
-        // Redirect will happen automatically via onAuthStateChanged
-      } catch (error) {
-        console.error('Error:', error);
-        alert(error.message);
-        // Reset button state
-        googleButton.disabled = false;
-        googleButton.textContent = 'Login with Google';
-      }
-    });
-  </script>
+  <script src="/js/firebase.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/login-page.js"></script>
 </body>
 </html>

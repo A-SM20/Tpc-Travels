@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Munnar - The Tea Paradise</title>
+    <link rel="stylesheet" href="munnar-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .travel-cost-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #ff8f00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(255, 143, 0, 0.2);
+            text-decoration: none;
+            margin-top: 60px;
+        }
+
+        .travel-cost-btn:hover {
+            background-color: #ff7b00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 143, 0, 0.3);
+        }
+
+        .travel-cost-btn i {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Travel Cost Button -->
+    <a href="/cost/travel.html" class="travel-cost-btn">
+        <i class="fas fa-calculator"></i>
+        Travel Cost
+    </a>
+
+    <header>
+        <nav>
+            <div class="nav-left">
+                <a href="../main.html#slider" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo">Discover Munnar</div>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#places">Places</a>
+                <a href="#activities">Activities</a>
+                <a href="#food">Food</a>
+                <a href="#map">Map</a>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Munnar</h1>
+            <p>The Tea Paradise of Kerala</p>
+        </div>
+    </section>
+
+    <section id="places" class="places">
+        <h2>Must-Visit Places</h2>
+        <div class="places-grid">
+            <div class="place-card">
+                <img src="assets/eravikulam-national-park-neelakuriji.jpg" 
+                     alt="Eravikulam National Park"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Eravikulam National Park</h3>
+                <p>Home to the endangered Nilgiri Tahr and famous for its stunning Neelakurinji flowers that bloom once every 12 years.</p>
+            </div>
+            <div class="place-card">
+                <img src="assets/m_tea_garden.jpg" 
+                     alt="Tea Gardens"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Tea Gardens</h3>
+                <p>Vast expanses of lush green tea plantations that create a mesmerizing landscape and offer perfect photo opportunities.</p>
+            </div>
+            <div class="place-card">
+                <img src="assets/m_3.jpg" 
+                     alt="Mattupetty Dam"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Mattupetty Dam</h3>
+                <p>A scenic reservoir surrounded by rolling hills and tea plantations, perfect for boating and photography.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="activities" class="activities">
+        <h2>Things to Do</h2>
+        <div class="activities-grid">
+            <div class="activity-card">
+                <i class="fas fa-mountain"></i>
+                <h3>Trekking</h3>
+                <p>Explore the beautiful trails through tea plantations and forests.</p>
+            </div>
+            <div class="activity-card">
+                <i class="fas fa-leaf"></i>
+                <h3>Tea Factory Visit</h3>
+                <p>Learn about tea processing at local tea factories.</p>
+            </div>
+            <div class="activity-card">
+                <i class="fas fa-camera"></i>
+                <h3>Photography</h3>
+                <p>Capture the stunning landscapes and wildlife.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="food" class="food">
+        <h2>Local Delicacies</h2>
+        <div class="food-grid">
+            <div class="food-card">
+                <img src="assets/chocolate.jpg"
+                     alt="Kerala Parotta"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Home-made Chocolate</h3>
+                <p>Due to the abundance of cocoa beans, Munnar is a leading producer of handmade chocolate with a variety of White chocolate, dark chocolate, and nut-filled chocolate.</p>
+            </div>
+            <!-- <div class="food-card">
+                <img src="https://images.unsplash.com/photo-1580128660010-f7ae1eb135d5?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                     alt="Appam"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Hot chocolate</h3>
+                <p>Soft, lacy pancakes made from fermented rice batter.</p>
+            </div> -->
+            <div class="food-card">
+                <img src="assets/tea_m.jpg" 
+                     alt="Kerala Tea"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Kerala Tea</h3>
+                <p> rich, malty taste and distinctive aroma, is a type of black tea produced in the tea gardens of Munnar, a hill station in Kerala, India. It's characterized by a golden yellow color and a fruity tinge after each sip.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="map" class="map-section">
+        <h2>Explore Munnar</h2>
+        <div id="map">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15712.706971160054!2d77.05177530071532!3d10.084600006098846!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b0799794d099a6d%3A0x63250e5553c7e0c!2sMunnar%2C%20Kerala%20685612!5e0!3m2!1sen!2sin!4v1743400136520!5m2!1sen!2sin" 
+                width="100%" 
+                height="400" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>
+
+    <div class="spacer"></div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@thamarakshanpillacooperatives.com</p>
+                <p>Phone: +91 1234567890</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ThamarakshanPillaCo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="munnar-script.js"></script>
+</body>
+</html> 

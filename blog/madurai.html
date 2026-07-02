@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Madurai - The Temple City</title>
+    <link rel="stylesheet" href="madurai-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .travel-cost-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #ff8f00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(255, 143, 0, 0.2);
+            text-decoration: none;
+            margin-top: 60px;
+        }
+
+        .travel-cost-btn:hover {
+            background-color: #ff7b00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 143, 0, 0.3);
+        }
+
+        .travel-cost-btn i {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Travel Cost Button -->
+    <a href="/cost/travel.html" class="travel-cost-btn">
+        <i class="fas fa-calculator"></i>
+        Travel Cost
+    </a>
+
+    <header>
+        <nav>
+            <div class="nav-left">
+                <a href="../main.html#slider" class="back-arrow"><i class="fas fa-arrow-left"></i></a>
+                <div class="logo">Discover Madurai</div>
+            </div>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#places">Places</a>
+                <a href="#activities">Activities</a>
+                <a href="#food">Food</a>
+                <a href="#map">Map</a>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Welcome to Madurai</h1>
+            <p>The Temple City of Tamil Nadu</p>
+        </div>
+    </section>
+
+    <section id="places" class="places">
+        <h2>Must-Visit Places</h2>
+        <div class="places-grid">
+            <div class="place-card">
+                <img src="assets/2.jpg" 
+                     alt="Meenakshi Temple"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Meenakshi Temple</h3>
+                <p>One of the most famous temples in India, known for its stunning architecture and religious significance.</p>
+            </div>
+            <div class="place-card">
+                <img src="assets/3.png" 
+                     alt="Thirumalai Nayak Palace"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Thirumalai Nayak Palace</h3>
+                <p>A magnificent palace showcasing the architectural brilliance of the Nayak dynasty.</p>
+            </div>
+            <div class="place-card">
+                <img src="assets/4.jpg" 
+                     alt="Gandhi Museum"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Gandhi Museum</h3>
+                <p>Houses exhibits related to Mahatma Gandhi and India's freedom struggle.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="activities" class="activities">
+        <h2>Things to Do</h2>
+        <div class="activities-grid">
+            <div class="activity-card">
+                <i class="fas fa-utensils"></i>
+                <h3>Food Tour</h3>
+                <p>Explore the famous street food and traditional cuisine of Madurai.</p>
+            </div>
+            <div class="activity-card">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>Shopping</h3>
+                <p>Visit local markets for traditional handicrafts and textiles.</p>
+            </div>
+            <div class="activity-card">
+                <i class="fas fa-camera"></i>
+                <h3>Photography</h3>
+                <p>Capture the beautiful architecture and cultural heritage.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="food" class="food">
+        <h2>Local Delicacies</h2>
+        <div class="food-grid">
+            <div class="food-card">
+                <img src="assets/poratta.jpg" 
+                     alt="Idli"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Bun Poratta</h3>
+                <p>A variation of poratta, that is made in the shape of a bun and is known for its fluffy and soft texture. .</p>
+            </div>
+            <div class="food-card">
+                <img src="assets/kari.jpg" 
+                     alt="Dosa"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Kari Dosa</h3>
+                <p>Chopped mutton meat cooked with Indian spices layered on a dosa, topped with an omelette. .</p>
+            </div>
+            <div class="food-card">
+                <img src="assets/jigarthanda.jpg" 
+                     alt="Biriyani"
+                     onerror="this.src='https://images.pexels.com/photos/2662116/pexels-photo-2662116.jpeg'">
+                <h3>Jigarthanda</h3>
+                <p>A popular cold drink from Madurai made with milk, almond gum, nannari syrup, sugar, and ice cream. </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="map" class="map-section">
+        <h2>Explore Madurai</h2>
+        <div id="map">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62883.09643963403!2d78.08162385536684!3d9.917834336831442!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b00c582b1189633%3A0xdc955b7264f63933!2sMadurai%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1743399155098!5m2!1sen!2sin" 
+                width="100%" 
+                height="400" 
+                style="border:0;" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </section>
+
+    <div class="spacer"></div>
+        
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p>Email: info@thamarakshanpillacooperatives.com</p>
+                <p>Phone: +91 1234567890</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 ThamarakshanPillaCo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="madurai-script.js"></script>
+</body>
+</html> 

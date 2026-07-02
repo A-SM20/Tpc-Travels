@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Planner</title>
+    <link rel="stylesheet" href="/cost/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        .back-btn {
+            position: fixed;
+            top: 10px;
+            left: 20px;
+            z-index: 9999;
+            background-color: #ff8f00;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(255, 143, 0, 0.2);
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        .back-btn:hover {
+            background-color: #ff7b00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 143, 0, 0.3);
+        }
+
+        .back-btn i {
+            font-size: 1.1em;
+        }
+
+        .find-partner-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .find-partner-btn:hover {
+            background-color: #45a049;
+        }
+        
+        .partner-request {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: none;
+            width: 400px;
+        }
+
+        .partner-request.active {
+            display: block !important;
+        }
+
+        .partner-request h3 {
+            color: #ff8f00;
+            margin-top: 0;
+        }
+
+        .partner-request p {
+            margin: 10px 0;
+        }
+
+        .partner-request .partner-id {
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+
+        .partner-request button {
+            padding: 8px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .partner-request button:first-of-type {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .partner-request button:last-of-type {
+            background: #f44336;
+            color: white;
+        }
+
+        .partner-request button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 450px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 10000;
+        }
+
+        .chat-container.active {
+            display: flex;
+        }
+
+        .chat-header {
+            background: #ff8f00;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px 10px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header .partner-id {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-break: break-word;
+        }
+
+        .message.sent {
+            background: #ff8f00;
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        .message.received {
+            background: #f1f1f1;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+
+        .message .time {
+            font-size: 0.7em;
+            opacity: 0.7;
+            margin-top: 5px;
+            text-align: right;
+        }
+
+        .chat-input {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .chat-input input:focus {
+            border-color: #ff8f00;
+        }
+
+        .chat-input button {
+            background: #ff8f00;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background: #ff7b00;
+            transform: translateY(-2px);
+        }
+
+        .no-messages {
+            text-align: center;
+            color: #999;
+            margin: auto;
+            font-style: italic;
+        }
+
+        .user-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .user-switcher:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+        }
+
+        .user-switcher i {
+            font-size: 1.1em;
+        }
+
+        .user-info {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9em;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .debug-info h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .debug-info p {
+            margin: 5px 0;
+        }
+
+        .debug-info .error {
+            color: #e74c3c;
+        }
+
+        .debug-info .success {
+            color: #2ecc71;
+        }
+
+        .chat-reopen-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            background-color: #ff8f00;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 15px rgba(255, 143, 0, 0.2);
+        }
+
+        .chat-reopen-btn:hover {
+            background-color: #ff7b00;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(255, 143, 0, 0.3);
+        }
+
+        .chat-reopen-btn i {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Back Button -->
+    <a href="../main.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+    </a>
+
+    <!-- User Switcher -->
+    <div class="user-switcher" onclick="switchUser()">
+        <i class="fas fa-user"></i>
+        <span id="currentUser">Switch User</span>
+    </div>
+
+    <div class="container">
+        <h1>Plan Your Trip</h1>
+
+        <div class="user-info">
+            <p>Current User ID: <span id="userIdDisplay">Not logged in</span></p>
+            <p>Session ID: <span id="sessionIdDisplay">None</span></p>
+        </div>
+
+        <!-- Debug Information -->
+        <div class="debug-info">
+            <h3>Debug Information</h3>
+            <p id="debugStatus">Status: Ready</p>
+            <p id="debugQuery">Query: None</p>
+            <p id="debugResults">Results: None</p>
+        </div>
+
+        <form id="travelForm" onsubmit="saveTravelDetails(event)">
+            <label for="destination">Select Destination:</label>
+            <select id="destination" required>
+                <option value="">Select Destination</option>
+                <option value="munnar">Munnar</option>
+                <option value="hampi">Hampi</option>
+                <option value="rameshwaram">Rameshwaram</option>
+                <option value="madurai">Madurai</option>
+                <option value="mysore">Mysore</option>
+            </select>
+
+            <label for="travelMode">Select Mode of Travel:</label>
+            <select id="travelMode" onchange="showOptions('travelOptions')" required>
+                <option value="">Select Mode</option>
+                <option value="flight">Flight</option>
+                <option value="train">Train</option>
+                <option value="bus">Bus</option>
+                <option value="car">Car</option>
+            </select>
+
+            <label for="travelOptions">Select Travel Option:</label>
+            <select id="travelOptions" required>
+                <option value="">Select an option</option>
+            </select>
+
+            <label for="returnTravelMode">Select Return Mode:</label>
+            <select id="returnTravelMode" onchange="showOptions('returnOptions')" required>
+                <option value="">Select Mode</option>
+                <option value="flight">Flight</option>
+                <option value="train">Train</option>
+                <option value="bus">Bus</option>
+                <option value="car">Car</option>
+            </select>
+
+            <label for="returnOptions">Select Return Option:</label>
+            <select id="returnOptions" required>
+                <option value="">Select an option</option>
+            </select>
+
+            <label for="hotel">Select Hotel:</label>
+            <select id="hotel" required>
+                <option value="">Select Hotel</option>
+            </select>
+
+            <label for="stayDays">Number of Days Staying:</label>
+            <input type="number" id="stayDays" min="1" value="1" required>
+
+            <button type="submit">Save & Calculate Cost</button>
+        </form>
+    </div>
+
+    <!-- Cost Popup -->
+    <div id="cost-overlay" class="overlay">
+        <div class="popup">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <p id="cost-message"></p>
+        </div>
+    </div>
+
+    <!-- Partner Request Popup -->
+    <div id="partnerRequest" class="partner-request">
+        <h3>Travel Partner Found!</h3>
+        <p>Someone is planning to travel to the same destination using the same mode of transport.</p>
+        <div class="partner-id" id="partnerIdDisplay">Partner ID: Loading...</div>
+        <p>Would you like to connect with them?</p>
+        <button onclick="acceptPartner()">Accept</button>
+        <button onclick="rejectPartner()">Reject</button>
+    </div>
+
+    <!-- Chat Container -->
+    <div id="chatContainer" class="chat-container">
+        <div class="chat-header">
+            <div>
+                <div id="chatPartnerName">Travel Partner</div>
+                <div class="partner-id" id="chatPartnerId">ID: Loading...</div>
+            </div>
+            <span class="close-chat" onclick="closeChat()">&times;</span>
+        </div>
+        <div id="chatMessages" class="chat-messages">
+            <div class="no-messages">No messages yet. Start the conversation!</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <button id="chatReopenBtn" class="chat-reopen-btn" onclick="reopenChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB0RAzn8Cu-49BpAKuuUr-N79ezda9e9qo",
+            authDomain: "tpc-travels.firebaseapp.com",
+            projectId: "tpc-travels",
+            storageBucket: "tpc-travels.firebasestorage.app",
+            messagingSenderId: "404762624068",
+            appId: "1:404762624068:web:d366c0940d9514ff063c11",
+            databaseURL: "https://tpc-travels-default-rtdb.firebaseio.com"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+        const rtdb = firebase.database();
+
+        // Session management for multiple users on same computer
+        let currentSessionId = null;
+        let currentUserId = null;
+
+        // Generate a random session ID if not exists
+        function getSessionId() {
+            if (!currentSessionId) {
+                currentSessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+                sessionStorage.setItem('travelSessionId', currentSessionId);
+            }
+            return currentSessionId;
+        }
+
+        // Switch between different user sessions
+        function switchUser() {
+            const newSessionId = 'session_' + Math.random().toString(36).substring(2, 15);
+            sessionStorage.setItem('travelSessionId', newSessionId);
+            currentSessionId = newSessionId;
+            
+            // Generate a new user ID for this session
+            currentUserId = 'user_' + Math.random().toString(36).substring(2, 15);
+            sessionStorage.setItem('travelUserId', currentUserId);
+            
+            // Update display
+            document.getElementById('sessionIdDisplay').textContent = currentSessionId;
+            document.getElementById('userIdDisplay').textContent = currentUserId;
+            document.getElementById('currentUser').textContent = 'User: ' + currentUserId.substring(0, 5) + '...';
+            
+            // Clear any existing chat
+            closeChat();
+            hidePartnerRequest();
+            
+            alert('Switched to new user session: ' + currentUserId);
+        }
+
+        // Initialize session on page load
+        window.addEventListener('load', function() {
+            // Get or create session ID
+            currentSessionId = sessionStorage.getItem('travelSessionId') || getSessionId();
+            
+            // Get or create user ID
+            currentUserId = sessionStorage.getItem('travelUserId');
+            if (!currentUserId) {
+                currentUserId = 'user_' + Math.random().toString(36).substring(2, 15);
+                sessionStorage.setItem('travelUserId', currentUserId);
+            }
+            
+            // Update display
+            document.getElementById('sessionIdDisplay').textContent = currentSessionId;
+            document.getElementById('userIdDisplay').textContent = currentUserId;
+            document.getElementById('currentUser').textContent = 'User: ' + currentUserId.substring(0, 5) + '...';
+        });
+
+        // Check authentication state
+        auth.onAuthStateChanged((user) => {
+            if (!user) {
+                window.location.href = '../main.html';
+            }
+        });
+
+        // Save travel details to Firebase
+        async function saveTravelDetails(event) {
+            event.preventDefault();
+            
+            const user = auth.currentUser;
+            if (!user) {
+                alert('Please login to save travel details');
+                return;
+            }
+
+            const destination = document.getElementById('destination').value;
+            const travelMode = document.getElementById('travelMode').value;
+            const travelOption = document.getElementById('travelOptions').value;
+            const returnMode = document.getElementById('returnTravelMode').value;
+            const returnOption = document.getElementById('returnOptions').value;
+            const hotel = document.getElementById('hotel').value;
+            const stayDays = document.getElementById('stayDays').value;
+
+            if (!destination || !travelMode || !travelOption || !returnMode || !returnOption || !hotel) {
+                alert('Please fill all required fields');
+                return;
+            }
+
+            updateDebugStatus("Saving travel details...");
+
+            const travelDetails = {
+                userId: currentUserId,
+                authUserId: user.uid,
+                sessionId: currentSessionId,
+                destination: destination,
+                travelMode: travelMode,
+                travelOption: travelOption,
+                returnMode: returnMode,
+                returnOption: returnOption,
+                hotel: hotel,
+                stayDays: stayDays,
+                status: 'pending',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            try {
+                const docRef = await db.collection('travelPlans').add(travelDetails);
+                updateDebugStatus("Travel details saved successfully!", false, true);
+                alert('Travel details saved successfully!');
+                calculateTrip(); // Calculate cost after saving
+            } catch (error) {
+                console.error('Error saving travel details:', error);
+                updateDebugStatus(`Error saving: ${error.message}`, true);
+                alert('Error saving travel details. Please try again.');
+            }
+        }
+
+        let currentPartner = null;
+        let chatRef = null;
+
+        // Function to find travel partner
+        async function findTravelPartner() {
+            if (!currentUserId) {
+                alert('Please log in to find travel partners');
+                return;
+            }
+
+            const destination = document.getElementById('destination').value;
+            const travelMode = document.getElementById('travelMode').value;
+            const travelOptions = document.getElementById('travelOptions').value;
+            const returnMode = document.getElementById('returnTravelMode').value;
+            const returnOptions = document.getElementById('returnOptions').value;
+
+            if (!destination || !travelMode || !travelOptions) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            updateDebugStatus("Searching for travel partners...", false, false);
+            updateDebugQuery(`Looking for users traveling to ${destination} using ${travelMode} (${travelOptions})`);
+
+            try {
+                // First check if current user has a saved travel plan
+                const userPlans = await db.collection('travelPlans')
+                    .where('userId', '==', currentUserId)
+                    .where('destination', '==', destination)
+                    .get();
+
+                if (userPlans.empty) {
+                    updateDebugStatus("Please save your travel plan first!", true, false);
+                    return;
+                }
+
+                // Find matching travel plans
+                const matchingPlans = await db.collection('travelPlans')
+                    .where('destination', '==', destination)
+                    .where('travelMode', '==', travelMode)
+                    .where('travelOption', '==', travelOptions)
+                    .where('userId', '!=', currentUserId)
+                    .where('status', '==', 'pending')
+                    .get();
+
+                updateDebugResults(`Found ${matchingPlans.size} matching plans`);
+
+                if (!matchingPlans.empty) {
+                    const partnerDoc = matchingPlans.docs[0];
+                    const partner = {
+                        ...partnerDoc.data(),
+                        id: partnerDoc.id
+                    };
+                    currentPartner = partner;
+                    
+                    // Update partner ID display
+                    document.getElementById('partnerIdDisplay').textContent = `Partner ID: ${partner.userId}`;
+                    document.getElementById('chatPartnerId').textContent = `ID: ${partner.userId}`;
+                    
+                    updateDebugStatus("Travel partner found!", false, true);
+                    showPartnerRequest();
+                } else {
+                    updateDebugStatus("No matching travel partners found", false, false);
+                }
+            } catch (error) {
+                console.error('Error finding travel partner:', error);
+                updateDebugStatus("Error finding travel partner", true, false);
+            }
+        }
+
+        function showPartnerRequest() {
+            console.log("Showing partner request popup");
+            const partnerRequest = document.getElementById('partnerRequest');
+            partnerRequest.style.display = 'block';
+            partnerRequest.classList.add('active');
+        }
+
+        function hidePartnerRequest() {
+            console.log("Hiding partner request popup");
+            const partnerRequest = document.getElementById('partnerRequest');
+            partnerRequest.style.display = 'none';
+            partnerRequest.classList.remove('active');
+        }
+
+        async function acceptPartner() {
+            if (!currentPartner) return;
+
+            const chatId = [currentUserId, currentPartner.userId].sort().join('_');
+            
+            try {
+                console.log("Accepting partner and creating chat room:", chatId);
+                // Create chat room in Realtime Database
+                chatRef = rtdb.ref(`chats/${chatId}`);
+                
+                // Update travel plan status in Firestore
+                await db.collection('travelPlans').doc(currentPartner.id).update({
+                    status: 'matched',
+                    matchedWith: currentUserId,
+                    chatId: chatId
+                });
+
+                // Also update current user's travel plan
+                const userPlans = await db.collection('travelPlans')
+                    .where('userId', '==', currentUserId)
+                    .where('destination', '==', currentPartner.destination)
+                    .get();
+
+                if (!userPlans.empty) {
+                    await db.collection('travelPlans').doc(userPlans.docs[0].id).update({
+                        status: 'matched',
+                        matchedWith: currentPartner.userId,
+                        chatId: chatId
+                    });
+                }
+
+                hidePartnerRequest();
+                showChat();
+                
+                // Send a welcome message
+                setTimeout(() => {
+                    sendWelcomeMessage();
+                }, 500);
+            } catch (error) {
+                console.error('Error accepting partner:', error);
+                alert('Error connecting with travel partner. Please try again.');
+            }
+        }
+
+        function rejectPartner() {
+            currentPartner = null;
+            hidePartnerRequest();
+        }
+
+        function showChat() {
+            console.log("Showing chat window");
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.classList.add('active');
+            chatContainer.style.display = 'flex';
+            document.getElementById('chatMessages').innerHTML = '<div class="no-messages">Loading messages...</div>';
+            loadMessages();
+        }
+
+        function closeChat() {
+            console.log("Closing chat window");
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.classList.remove('active');
+            chatContainer.style.display = 'none';
+            document.getElementById('chatReopenBtn').style.display = 'flex';
+            if (chatRef) {
+                chatRef.off('child_added');
+            }
+        }
+
+        function reopenChat() {
+            console.log("Reopening chat window");
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.classList.add('active');
+            chatContainer.style.display = 'flex';
+            document.getElementById('chatReopenBtn').style.display = 'none';
+            loadMessages();
+        }
+
+        function loadMessages() {
+            if (!chatRef) {
+                console.log("No chat reference available");
+                return;
+            }
+
+            console.log("Loading messages from chat reference");
+            // Clear existing messages
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.innerHTML = '';
+            
+            // Set up listener for new messages
+            chatRef.on('child_added', (snapshot) => {
+                const message = snapshot.val();
+                console.log("New message received:", message);
+                displayMessage(message);
+            });
+        }
+
+        function displayMessage(message) {
+            const chatMessages = document.getElementById('chatMessages');
+            
+            // Remove "no messages" placeholder if it exists
+            const noMessages = chatMessages.querySelector('.no-messages');
+            if (noMessages) {
+                noMessages.remove();
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(message.userId === currentUserId ? 'sent' : 'received');
+            
+            // Add message text
+            const messageText = document.createElement('div');
+            messageText.textContent = message.text;
+            messageDiv.appendChild(messageText);
+            
+            // Add timestamp if available
+            if (message.timestamp) {
+                const timeDiv = document.createElement('div');
+                timeDiv.classList.add('time');
+                const date = new Date(message.timestamp);
+                timeDiv.textContent = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                messageDiv.appendChild(timeDiv);
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function sendMessage() {
+            if (!chatRef) return;
+
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            
+            if (message) {
+                chatRef.push({
+                    text: message,
+                    userId: currentUserId,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                messageInput.value = '';
+            }
+        }
+
+        function sendWelcomeMessage() {
+            if (!chatRef) return;
+            
+            chatRef.push({
+                text: `Hi! I'm planning to travel to ${document.getElementById('destination').value} using ${document.getElementById('travelMode').value}. Let's connect!`,
+                userId: currentUserId,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            });
+        }
+
+        // Add event listener for Enter key in chat
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Modify the form to include the find partner button
+        document.getElementById('travelForm').innerHTML += `
+            <button type="button" class="find-partner-btn" onclick="findTravelPartner()">
+                Find Travel Partner
+            </button>
+        `;
+
+        // Debug helper functions
+        function updateDebugStatus(message, isError = false, isSuccess = false) {
+            const statusElement = document.getElementById('debugStatus');
+            statusElement.textContent = `Status: ${message}`;
+            statusElement.className = isError ? 'error' : (isSuccess ? 'success' : '');
+        }
+
+        function updateDebugQuery(message) {
+            document.getElementById('debugQuery').textContent = `Query: ${message}`;
+        }
+
+        function updateDebugResults(message) {
+            document.getElementById('debugResults').textContent = `Results: ${message}`;
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
