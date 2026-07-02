@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Slider Design </title>
+        <link rel="stylesheet" href="sliderstyle.css" />
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+            integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <!-- Firebase SDK -->
+        <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+        <style>
+            body {
+                background-color: #000;
+                margin: 0;
+                padding: 0;
+            }
+
+            .profile-container {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 1000;
+            }
+
+            .profile-link {
+                display: block;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                overflow: hidden;
+                border: 2px solid #fff;
+                box-shadow: 0 2px 15px rgba(255, 255, 255, 0.2);
+                transition: transform 0.3s ease;
+                cursor: pointer;
+            }
+
+            .profile-link:hover {
+                transform: scale(1.1);
+                box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
+            }
+
+            .profile-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .profile-placeholder {
+                width: 100%;
+                height: 100%;
+                background-color: #333;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 20px;
+            }
+
+            .dropdown {
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                z-index: 1000;
+            }
+
+            .dropdown-content {
+                display: none;
+                position: absolute;
+                right: 0;
+                background-color: rgba(255, 255, 255, 0.95);
+                min-width: 160px;
+                border-radius: 8px;
+                overflow: hidden;
+                transition: all 0.3s ease;
+            }
+
+            .dropdown-content.show {
+                display: block;
+            }
+
+            .dropdown-item {
+                padding: 12px 16px;
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                color: #333;
+                transition: background-color 0.3s ease;
+            }
+
+            .dropdown-item:hover {
+                background-color: #f5f5f5;
+            }
+
+            .dropdown-item i {
+                margin-right: 10px;
+                width: 20px;
+            }
+
+            .dropdown-divider {
+                height: 1px;
+                background-color: #eee;
+                margin: 0;
+            }
+
+            .logout-btn {
+                background: none;
+                border: none;
+                padding: 12px 16px;
+                width: 100%;
+                text-align: left;
+                cursor: pointer;
+                font-size: 14px;
+                color: #333;
+                display: flex;
+                align-items: center;
+                transition: background-color 0.3s ease;
+            }
+
+            .logout-btn:hover {
+                background-color: #f5f5f5;
+            }
+
+            .logout-btn i {
+                margin-right: 10px;
+                width: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <!-- Profile Logo -->
+        <div class="profile-container">
+            <div class="profile-link" id="profileLink">
+                <div class="profile-placeholder" id="profilePlaceholder">
+                    <i class="fas fa-user"></i>
+                </div>
+                <img src="" alt="Profile" class="profile-image" id="profileImage" style="display: none;">
+            </div>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown">
+            <div class="dropdown-content" id="dropdownContent">
+                <a href="profile.html" class="dropdown-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <hr class="dropdown-divider">
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="slide">
+                <div class="item" style="background-image: url(s1.jpg);">
+                    <div class="content">
+                        <div class="name">Switzerland</div>
+                        <div class="des">Experience the majestic Swiss Alps and pristine lakes in this paradise of natural beauty.</div>
+                        <button>See More</button>
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(s2.jpg);">
+                    <div class="content">
+                        <div class="name">Finland</div>
+                        <div class="des">Discover the magic of the Northern Lights and endless summer days in the land of a thousand lakes.</div>
+                        <button>See More</button>
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(s3.jpg);">
+                    <div class="content">
+                        <div class="name">Iceland</div>
+                        <div class="des">Journey through dramatic landscapes of volcanoes, glaciers, and geothermal wonders.</div>
+                        <button>See More</button>
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(s4.jpg);">
+                    <div class="content">
+                        <div class="name">Australia</div>
+                        <div class="des">Explore the diverse beauty from the Great Barrier Reef to the Outback's ancient landscapes.</div>
+                        <button>See More</button>
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(s5.jpg);">
+                    <div class="content">
+                        <div class="name">Netherland</div>
+                        <div class="des">Immerse yourself in the charm of windmills, tulip fields, and historic canals.</div>
+                        <button>See More</button>
+                    </div>
+                </div>
+                <div class="item" style="background-image: url(s6.jpg);">
+                    <div class="content">
+                        <div class="name">Ireland</div>
+                        <div class="des">Discover the emerald isle's rich heritage, dramatic cliffs, and warm hospitality.</div>
+                        <button>See More</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button">
+                <button class="prev"><i class="fa-solid fa-arrow-left"></i></button>
+                <button class="next"><i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <script src="sliderjs.js"></script>
+        <script>
+            // Firebase Configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyB0RAzn8Cu-49BpAKuuUr-N79ezda9e9qo",
+                authDomain: "tpc-travels.firebaseapp.com",
+                projectId: "tpc-travels",
+                storageBucket: "tpc-travels.firebasestorage.app",
+                messagingSenderId: "404762624068",
+                appId: "1:404762624068:web:d366c0940d9514ff063c11"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+
+            // DOM Elements
+            const profileImage = document.getElementById('profileImage');
+            const profilePlaceholder = document.getElementById('profilePlaceholder');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const profileLink = document.getElementById('profileLink');
+            const dropdownContent = document.getElementById('dropdownContent');
+
+            // Toggle dropdown
+            profileLink.addEventListener('click', () => {
+                dropdownContent.classList.toggle('show');
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (event) => {
+                if (!profileLink.contains(event.target) && !dropdownContent.contains(event.target)) {
+                    dropdownContent.classList.remove('show');
+                }
+            });
+
+            // Check authentication state
+            auth.onAuthStateChanged(async (user) => {
+                if (user) {
+                    try {
+                        // Get user data from Firestore
+                        const userDoc = await db.collection('users').doc(user.uid).get();
+                        const userData = userDoc.data();
+
+                        // Update profile image if available
+                        if (userData?.photoURL) {
+                            profileImage.src = userData.photoURL;
+                            profileImage.style.display = 'block';
+                            profilePlaceholder.style.display = 'none';
+                        } else {
+                            profileImage.style.display = 'none';
+                            profilePlaceholder.style.display = 'flex';
+                        }
+                    } catch (error) {
+                        console.error('Error fetching user data:', error);
+                    }
+                } else {
+                    // User is signed out, redirect to login
+                    window.location.href = 'login.html';
+                }
+            });
+
+            // Handle logout
+            logoutBtn.addEventListener('click', async () => {
+                try {
+                    await auth.signOut();
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Error signing out:', error);
+                    alert('Error signing out. Please try again.');
+                }
+            });
+        </script>
+    </body>
+</html>
+

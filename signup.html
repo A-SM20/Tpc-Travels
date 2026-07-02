@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TPC Travels Sign Up</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="loginstyle.css">
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <style>
+    .back-home {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 1000;
+    }
+
+    .back-home:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-home">
+    <i class="fas fa-home"></i>
+    Back to Home
+  </a>
+  <div class="login">
+    <img src="bg6.jpg" alt="signup image" class="login__img">
+
+    <form id="signupForm" class="login__form">
+      <h1 class="login__title">Create Account</h1>
+
+      <div class="login__content">
+        <div class="login__box">
+          <div class="login__box-input">
+            <input type="text" required class="login__input" id="fullName" placeholder=" ">
+            <label for="" class="login__label">Full Name</label>
+          </div>
+        </div>
+
+        <div class="login__box">
+          <div class="login__box-input">
+            <input type="email" required class="login__input" id="email" placeholder=" ">
+            <label for="" class="login__label">Email</label>
+          </div>
+        </div>
+
+        <div class="login__box">
+          <div class="login__box-input">
+            <input type="password" required class="login__input" id="password" placeholder=" ">
+            <label for="" class="login__label">Password</label>
+          </div>
+        </div>
+
+        <div class="login__box">
+          <div class="login__box-input">
+            <input type="password" required class="login__input" id="confirmPassword" placeholder=" ">
+            <label for="" class="login__label">Confirm Password</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="login__check">
+        <div class="login__check-group">
+          <input type="checkbox" class="login__check-input" id="termsCheck" required>
+          <label for="" class="login__check-label">I agree to the Terms & Conditions</label>
+        </div>
+      </div>
+
+      <button type="submit" class="login__button" id="signupButton">Sign Up</button>
+
+      <div class="login__divider">
+        <span>OR</span>
+      </div>
+
+      <button type="button" id="googleSignUp" class="login__button google-button">
+        <img src="https://www.google.com/favicon.ico" alt="Google" class="google-icon">
+        Sign up with Google
+      </button>
+
+      <p class="login__register">
+        Already have an account? <a href="login.html">Login</a>
+      </p>
+    </form>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyB0RAzn8Cu-49BpAKuuUr-N79ezda9e9qo",
+      authDomain: "tpc-travels.firebaseapp.com",
+      projectId: "tpc-travels",
+      storageBucket: "tpc-travels.firebasestorage.app",
+      messagingSenderId: "404762624068",
+      appId: "1:404762624068:web:d366c0940d9514ff063c11"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Check if user is already logged in
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        // User is signed in, redirect to landing page
+        window.location.href = '../tpc landing/main.html';
+      }
+    });
+
+    // Handle form submission
+    document.getElementById('signupForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const signupButton = document.getElementById('signupButton');
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        alert("Passwords don't match!");
+        return;
+      }
+
+      try {
+        // Disable button and show loading state
+        signupButton.disabled = true;
+        signupButton.textContent = 'Creating Account...';
+
+        // Create user with email and password
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+        const user = userCredential.user;
+
+        // Store additional user data in Firestore
+        await db.collection('users').doc(user.uid).set({
+          fullName: fullName,
+          email: email,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          lastLogin: new Date().toISOString()
+        });
+
+        // Store last login time in localStorage
+        localStorage.setItem('lastLogin', new Date().toISOString());
+        
+        // Redirect will happen automatically via onAuthStateChanged
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+        // Reset button state
+        signupButton.disabled = false;
+        signupButton.textContent = 'Sign Up';
+      }
+    });
+
+    // Handle Google Sign Up
+    document.getElementById('googleSignUp').addEventListener('click', async () => {
+      const googleButton = document.getElementById('googleSignUp');
+      try {
+        // Disable button and show loading state
+        googleButton.disabled = true;
+        googleButton.textContent = 'Connecting...';
+
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await auth.signInWithPopup(provider);
+        const user = result.user;
+
+        // Store user data in Firestore
+        await db.collection('users').doc(user.uid).set({
+          fullName: user.displayName,
+          email: user.email,
+          photoURL: user.photoURL,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          lastLogin: new Date().toISOString()
+        }, { merge: true });
+
+        // Store last login time in localStorage
+        localStorage.setItem('lastLogin', new Date().toISOString());
+        
+        // Redirect will happen automatically via onAuthStateChanged
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+        // Reset button state
+        googleButton.disabled = false;
+        googleButton.textContent = 'Sign up with Google';
+      }
+    });
+  </script>
+</body>
+</html> 
